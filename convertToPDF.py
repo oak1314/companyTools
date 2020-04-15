@@ -1,12 +1,13 @@
 import os
-from comtypes import client
+from comtypes.client import CreateObject
+
 
 class ComTypes:
     def ppt_pdf(self,path):
         # PPT 转 PDF
         pdf_path = path.replace('ppt', 'pdf') # pdf保存路径 推荐使用绝对路径
         try:
-            p = client.CreateObject("PowerPoint.Application")
+            p = CreateObject("PowerPoint.Application")
             ppt = p.Presentations.Open(path)
             ppt.ExportAsFixedFormat(pdf_path, 2, PrintRange=None)
             ppt.Close()
@@ -18,7 +19,7 @@ class ComTypes:
     def word_pdf(self,path):
         # Word转pdf
         pdf_path = path.replace('doc', 'pdf')
-        w = client.CreateObject("Word.Application")
+        w = CreateObject("Word.Application")
         doc = w.Documents.Open(path)
         doc.ExportAsFixedFormat(pdf_path, 17)
         doc.Close()
@@ -28,10 +29,10 @@ class ComTypes:
     def excel_pdf(self,path):
         # Excel转pdf
         pdf_path = path.replace('xlsx', 'pdf')
-        xlApp = client.CreateObject("Excel.Application")
-        books = xlApp.Workbooks.Open(path)
-        books.ExportAsFixedFormat(0, pdf_path)
-        books.Close(False)
+        xlApp = CreateObject("Excel.Application")
+        book = xlApp.Workbooks.Open(path)
+        book.ExportAsFixedFormat(0, pdf_path)
+        book.Close(False)
         xlApp.Quit()
         
     def file_name(self,file_dir): 
