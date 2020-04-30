@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"os/exec"
+	"strings"
 )
 
 const sourceData string = "./作成用データ/請求書元データ.xlsx"
@@ -25,8 +27,8 @@ func main() {
 		return
 	}
 
-	names := make([]string,0)
-	moneys := make([]string,0)
+	names := make([]string, 0)
+	moneys := make([]string, 0)
 	inv := new(Invoice)
 	// var inv Invoice
 	// inv := Invoice{}
@@ -86,7 +88,21 @@ func main() {
 			break
 		}
 	}
+	CmdPython()
+}
 
+// call python script
+func CmdPython() (err error) {
+	args := []string{"convertToPDF.py"}
+	out, err := exec.Command("python", args...).Output()
+	if err != nil {
+		return
+	}
+	result := string(out)
+	if strings.Index(result, "success") != 0 {
+		err = errors.New(fmt.Sprintf("main.py error：%s", result))
+	}
+	return
 }
 
 func createNewExcel(inv Invoice) {

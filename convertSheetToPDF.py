@@ -53,6 +53,9 @@ class ComTypes:
 
 if __name__ == '__main__':
     comty  = ComTypes()
-    for xlsx_file in comty.file_name(os.getcwd()):
-        comty.excel_pdf(xlsx_file)
+    file_dir = os.getcwd()
+    for entry in os.listdir(file_dir):
+        if not os.path.isfile(os.path.join(file_dir, entry)):
+            for xlsx_file in comty.file_name(os.path.join(file_dir, entry)):
+                comty.excel_pdf(xlsx_file)
 
