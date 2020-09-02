@@ -1,0 +1,2 @@
+=OR(TEXT($C5,"aaa")="土",TEXT($C5,"aaa")="日")
+=COUNTIF(祝日,$C5)>0
