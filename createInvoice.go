@@ -16,6 +16,7 @@ type Invoice struct {
 	cellCompany  string
 	cellMonth    string
 	cellPayMonth string
+	cellFee string
 	cellNames    []string
 	cellMoney    []string
 }
@@ -34,9 +35,14 @@ func main() {
 	// var inv Invoice
 	// inv := Invoice{}
 	currentLine := 3
+	// 請求する会社
 	currentCompany := ""
+	// 請求する月
 	currentMonth := ""
+	// お支払いサイト
 	currentPayMonth := ""
+	//　お振込手数料
+	currentFee := ""
 	for {
 		cellCompany, err := f.GetCellValue("Sheet1", fmt.Sprintf("B%d", currentLine))
 		if err != nil {
@@ -56,11 +62,18 @@ func main() {
 			return
 		}
 
+		cellFee, err := f.GetCellValue("Sheet1", fmt.Sprintf("K%d", currentLine))
+		if err != nil {
+			println(err.Error())
+			return
+		}
+
 		if currentLine == 3 {
 			// 一回目
 			currentCompany = cellCompany
 			currentMonth = cellMonth
 			currentPayMonth = cellPayMonth
+			currentFee = cellFee
 		}
 
 		// 会社が変わる
@@ -69,6 +82,7 @@ func main() {
 			inv.cellCompany = currentCompany
 			inv.cellMonth = currentMonth
 			inv.cellPayMonth = currentPayMonth
+			inv.cellFee = currentFee
 			inv.cellNames = names
 			inv.cellMoney = moneys
 			createNewExcel(*inv)
@@ -77,6 +91,7 @@ func main() {
 			currentCompany = cellCompany
 			currentMonth = cellMonth
 			currentPayMonth = cellPayMonth
+			currentFee = cellFee
 			names = names[:0]
 			moneys = moneys[:0]
 		}
@@ -135,6 +150,11 @@ func createNewExcel(inv Invoice) {
 		f.SetCellFormula("Sheet1", "B38", "EOMONTH(DATE(YEAR(NOW()),$B$3,1),1)+DAY(15)")
 	}else if inv.cellPayMonth == "2" {
 		f.SetCellFormula("Sheet1", "B38", "EOMONTH(DATE(YEAR(NOW()),$B$3,1),2)")
+	}
+
+	// お振込手数料が客様負担
+	if inv.cellFee == "0" {
+		f.SetCellStr("Sheet1","B33","（お振込み手数料はお客様にてご負担いただけますようお願いいたします。）")
 	}
 	//f.CalcCellValue("Sheet1", "B38")
 
