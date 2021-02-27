@@ -16,7 +16,7 @@ type Invoice struct {
 	cellCompany  string
 	cellMonth    string
 	cellPayMonth string
-	cellFee string
+	cellFee 	 string
 	cellNames    []string
 	cellMoney    []string
 }
